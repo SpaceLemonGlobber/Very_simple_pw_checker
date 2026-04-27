@@ -1,9 +1,13 @@
-import re 
+import re
+import os 
 
-def load_common_passwords(): # fungsi untuk memuat daftar password dari file teks
-    with open("PW_Checker/most_common_pw_sample.txt", "r") as file:
-        passwords = file.read().splitlines()
-    return passwords
+# memuat daftar password
+def load_common_passwords():
+    base_dir = os.path.dirname(__file__)
+    file_path = os.path.join(base_dir, "most_common_pw_sample.txt")
+
+    with open(file_path, "r") as file:
+        return set(file.read().splitlines())  
 
 def check_password(password, common_passwords): # fungsi yang memriksa kekuatan password
     score = 0
