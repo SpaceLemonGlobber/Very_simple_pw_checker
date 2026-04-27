@@ -26,8 +26,53 @@ def calculate_entropy(password):
     if charset == 0:
         return 0
 
-    entropy = len(password) * math.log2(charset)
+    entropy = len(password) * math.log2(charset) #rumus entropy yang digunakan = panjang password * log2(jumlah karakter unik dalam password)
     return entropy
+
+# fungsi pendeteksi pola umum dalam password
+def dictionary_match(password, common_passwords):
+    password_lower = password.lower()
+    for word in common_passwords:
+        if word in password_lower:
+            return True
+    return False
+
+def has_sequence(password): # password dengan pola umum
+    sequences = ["123", "abc", "qwerty", "password", "admin", "test"]
+    return any(seq in password.lower() for seq in sequences)
+
+def has_repetition(password): # password dengan karakter berulang
+    return any(password.count(c) > len(password)//2 for c in password)
+
+# analsis kekuatan password dan feedback
+def analyze_password(password, common_passwords):
+    issues = []
+
+    if len(password) < 8:
+        issues.append("Password terlalu pendek (minimum 8 karakter)")
+
+    if not re.search(r"[A-Z]", password):
+        issues.append("Password tidak mengandung huruf kapital")
+
+    if not re.search(r"[a-z]", password):
+        issues.append("Password tidak mengandung huruf kecil")
+
+    if not re.search(r"[0-9]", password):
+        issues.append("Password tidak mengandung angka")
+
+    if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
+        issues.append("Password tidak mengandung karakter khusus")
+
+    if dictionary_match(password, common_passwords):
+        issues.append("Password mengandung kata-kata yang terlalu umum")
+
+    if has_sequence(password):
+        issues.append("Password mengandung urutan yang dapat terlalu diprediksi")
+
+    if has_repetition(password):
+        issues.append("Password mengandung karakter berulang terlalu banyak")
+
+    return issues
 
 def check_password(password, common_passwords): # fungsi yang memriksa kekuatan password
     score = 0
