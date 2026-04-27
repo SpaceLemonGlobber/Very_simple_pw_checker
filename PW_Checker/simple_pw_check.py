@@ -9,7 +9,7 @@ def load_common_passwords():
     with open(file_path, "r") as file:
         return set(file.read().splitlines())  
     
-# kalkulasi entropi password
+# kalkulasi entropy password
 def calculate_entropy(password):
     charset = 0
 
@@ -50,6 +50,22 @@ def check_password(password, common_passwords): # fungsi yang memriksa kekuatan 
         return "Medium"
     else:
         return "Strong"
+
+# skor akhir
+def evaluate_password(password, common_passwords):
+    entropy = calculate_entropy(password)
+
+    # rating entropy
+    if entropy < 28:
+        rating = "Very Weak"
+    elif entropy < 36:
+        rating = "Weak"
+    elif entropy < 60:
+        rating = "Moderate"
+    else:
+        rating = "Strong"
+
+    return rating, entropy
     
 common_passwords = load_common_passwords() # memuat daftar password ke dalam variabel
 
