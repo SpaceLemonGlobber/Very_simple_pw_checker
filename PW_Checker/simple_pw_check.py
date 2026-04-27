@@ -74,32 +74,10 @@ def analyze_password(password, common_passwords):
 
     return issues
 
-def check_password(password, common_passwords): # fungsi yang memriksa kekuatan password
-    score = 0
-
-    if len(password) >= 8:
-        score += 1
-    if len(password) >= 12:
-        score += 1
-    if re.search(r"[A-Z]", password):
-        score += 1
-    if re.search(r"[a-z]", password):
-        score += 1
-    if re.search(r"[0-9]", password):
-        score += 1
-    if re.search(r"[!@#$%^&*]", password):
-        score += 1
-
-    if score <= 2:
-        return "lemah"
-    elif score <= 4:
-        return "sedang"
-    else:
-        return "kuat"
-
 # skor akhir
 def evaluate_password(password, common_passwords):
     entropy = calculate_entropy(password)
+    issues = analyze_password(password, common_passwords)
 
     # rating entropy
     if entropy < 28:
@@ -111,12 +89,22 @@ def evaluate_password(password, common_passwords):
     else:
         rating = "kuat"
 
-    return rating, entropy
+     # Penaalti apabila password memiliki banyak masalah
+    if len(issues) >= 3:
+        rating = "Weak"
+
+    return rating, entropy, issues
     
 common_passwords = load_common_passwords() # memuat daftar password ke dalam variabel
 
 pwd = input("Masukkan password: ") # cek password sederhana
-rating, entropy = evaluate_password(pwd, common_passwords)
+rating, entropy, issues = evaluate_password(pwd, common_passwords)
 print("\n====== Hasil Akhir ======")
 print("Rating:", rating)
-print(f"Entropy: {entropy:.2f} bits\n") # hasil akhir
+print(f"Entropy: {entropy:.2f} bits") # hasil akhir
+if issues:
+    print("\nMasalah yang ditemukan:")
+    for issue in issues:
+        print("-", issue)
+else:
+    print("\nPassword sudah bagus") #tambahan feedback untuk pengguna
