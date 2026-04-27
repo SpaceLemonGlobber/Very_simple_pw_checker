@@ -8,6 +8,25 @@ def load_common_passwords():
 
     with open(file_path, "r") as file:
         return set(file.read().splitlines())  
+    
+# kalkulasi entropi password
+def calculate_entropy(password):
+    charset = 0
+
+    if re.search(r"[a-z]", password):
+        charset += 26
+    if re.search(r"[A-Z]", password):
+        charset += 26
+    if re.search(r"[0-9]", password):
+        charset += 10
+    if re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
+        charset += 32
+
+    if charset == 0:
+        return 0
+
+    entropy = len(password) * math.log2(charset)
+    return entropy
 
 def check_password(password, common_passwords): # fungsi yang memriksa kekuatan password
     score = 0
