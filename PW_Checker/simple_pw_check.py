@@ -1,5 +1,6 @@
 import re
-import os 
+import os
+import math 
 
 # memuat daftar password
 def load_common_passwords():
@@ -45,11 +46,11 @@ def check_password(password, common_passwords): # fungsi yang memriksa kekuatan 
         score += 1
 
     if score <= 2:
-        return "Weak"
+        return "lemah"
     elif score <= 4:
-        return "Medium"
+        return "sedang"
     else:
-        return "Strong"
+        return "kuat"
 
 # skor akhir
 def evaluate_password(password, common_passwords):
@@ -57,18 +58,20 @@ def evaluate_password(password, common_passwords):
 
     # rating entropy
     if entropy < 28:
-        rating = "Very Weak"
+        rating = "sangat lemah"
     elif entropy < 36:
-        rating = "Weak"
+        rating = "lemah"
     elif entropy < 60:
-        rating = "Moderate"
+        rating = "sedang"
     else:
-        rating = "Strong"
+        rating = "kuat"
 
     return rating, entropy
     
 common_passwords = load_common_passwords() # memuat daftar password ke dalam variabel
 
-pwd = input("Enter password: ") # cek password sederhana
-result = check_password(pwd, common_passwords) # hasil
-print("Strength:", result)
+pwd = input("Masukkan password: ") # cek password sederhana
+rating, entropy = evaluate_password(pwd, common_passwords)
+print("\n====== Hasil Akhir ======")
+print("Rating:", rating)
+print(f"Entropy: {entropy:.2f} bits\n") # hasil akhir
